@@ -1,0 +1,189 @@
+import React, { useState, useEffect } from 'react';
+import { GlassCard } from '@/components/ui/GlassCard';
+import { Button } from '@/components/ui/Button';
+import { motion } from 'motion/react';
+import { Activity, Users, Eye, ArrowUp, DollarSign, RefreshCw, Trash2, Plus } from 'lucide-react';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+
+const MOCK_DATA = [
+  { name: 'Jan', traffic: 1200 },
+  { name: 'Feb', traffic: 2100 },
+  { name: 'Mar', traffic: 3800 },
+  { name: 'Apr', traffic: 5400 },
+  { name: 'May', traffic: 8900 },
+  { name: 'Jun', traffic: 12500 }
+];
+
+export function AdminPanel() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  
+  const [services, setServices] = useState([
+    { id: 1, name: 'Marketing Retainer', price: '₹90,000' },
+    { id: 2, name: 'Premium Web Dev', price: '₹1.5L' },
+    { id: 3, name: 'Performance Ads', price: '₹50,000' }
+  ]);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username === 'DUBAI CHALO' && password === 'DOLLER$$$') {
+      setIsAuthenticated(true);
+      setError('');
+    } else {
+      setError('Invalid credentials');
+    }
+  };
+
+  const handleSavePrices = () => {
+    setIsSaving(true);
+    setTimeout(() => {
+      setIsSaving(false);
+      // In a real app this would save to a database.
+    }, 800);
+  };
+
+  const addService = () => {
+    setServices([...services, { id: Date.now(), name: '', price: '' }]);
+  };
+
+  const updateService = (id: number, field: 'name' | 'price', value: string) => {
+    setServices(services.map(s => s.id === id ? { ...s, [field]: value } : s));
+  };
+
+  const removeService = (id: number) => {
+    setServices(services.filter(s => s.id !== id));
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen pt-24 px-4 flex items-center justify-center relative w-full overflow-hidden bg-mesh">
+        <GlassCard className="p-8 md:p-12 w-full max-w-md">
+           <h2 className="text-3xl font-display font-bold text-white mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-blue">Admin Access</h2>
+           
+           <form onSubmit={handleLogin} className="space-y-6">
+             {error && <div className="text-red-400 text-sm font-medium text-center">{error}</div>}
+             <div className="space-y-2">
+                <label className="text-sm text-text-soft font-medium">Username</label>
+                <input 
+                  type="text" 
+                  value={username} onChange={e => setUsername(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-purple"
+                />
+             </div>
+             <div className="space-y-2">
+                <label className="text-sm text-text-soft font-medium">Password</label>
+                <input 
+                  type="password" 
+                  value={password} onChange={e => setPassword(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brand-purple"
+                />
+             </div>
+             <Button className="w-full h-12" type="submit">Login to Dashboard</Button>
+           </form>
+        </GlassCard>
+      </div>
+    );
+  }
+
+  return (
+    <div className="pt-24 pb-32 px-4 md:px-12 relative w-full max-w-7xl mx-auto space-y-12">
+       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <h1 className="text-4xl font-display font-bold text-white">Analytics <span className="text-brand-purple">Overview</span></h1>
+            <p className="text-text-soft mt-1">Real-time traffic and performance tracking.</p>
+          </div>
+          <Button variant="outline" icon={<RefreshCw className="w-4 h-4" />}>Refresh Data</Button>
+       </div>
+
+       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { label: 'Total Traffic', val: '12,504', change: '+24%', icon: <Users /> },
+            { label: 'Page Views', val: '45,200', change: '+12%', icon: <Eye /> },
+            { label: 'Conversion Rate', val: '4.8%', change: '+1.2%', icon: <Activity /> },
+            { label: 'WhatsApp Leads', val: '142', change: '+34%', icon: <ArrowUp /> },
+          ].map((stat, i) => (
+            <GlassCard key={i} className="p-6">
+               <div className="flex justify-between items-start mb-4">
+                 <div className="p-3 bg-white/5 rounded-xl text-brand-blue">{stat.icon}</div>
+                 <div className="text-green-400 text-sm font-bold bg-green-400/10 px-2 py-1 rounded-md">{stat.change}</div>
+               </div>
+               <div className="text-3xl font-display font-bold text-white mb-1">{stat.val}</div>
+               <div className="text-sm text-text-soft">{stat.label}</div>
+            </GlassCard>
+          ))}
+       </div>
+
+       <div className="grid lg:grid-cols-3 gap-8">
+          <GlassCard className="p-6 lg:col-span-2">
+             <h3 className="text-xl font-bold text-white mb-6">Traffic Over Time</h3>
+             <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={MOCK_DATA}>
+                    <defs>
+                      <linearGradient id="colorTraffic" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#9D4EDD" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#9D4EDD" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+                    <XAxis dataKey="name" stroke="#B8BCC7" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#B8BCC7" fontSize={12} tickLine={false} axisLine={false} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#0A0512', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                    <Area type="monotone" dataKey="traffic" stroke="#9D4EDD" strokeWidth={3} fillOpacity={1} fill="url(#colorTraffic)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+             </div>
+          </GlassCard>
+
+          <GlassCard className="p-6 flex flex-col max-h-[600px]">
+             <div className="flex items-center justify-between mb-6">
+               <h3 className="text-xl font-bold text-white flex items-center gap-2"><DollarSign className="w-5 h-5 text-green-400" /> Services</h3>
+               <button onClick={addService} className="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-colors">
+                 <Plus className="w-4 h-4 text-white" />
+               </button>
+             </div>
+             
+             <div className="space-y-4 flex-grow overflow-y-auto no-scrollbar pr-2 mb-4">
+               {services.map((service) => (
+                 <div key={service.id} className="flex flex-col gap-2 p-4 bg-white/5 border border-white/5 rounded-xl group relative">
+                    <button onClick={() => removeService(service.id)} className="absolute top-2 right-2 text-white/40 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    <div className="space-y-1">
+                      <label className="text-xs text-text-soft font-medium uppercase tracking-wider">Service Name</label>
+                      <input 
+                        type="text" 
+                        value={service.name} onChange={e => updateService(service.id, 'name', e.target.value)}
+                        placeholder="e.g. SEO Optimization"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-purple"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs text-text-soft font-medium uppercase tracking-wider">Price Options</label>
+                      <input 
+                        type="text" 
+                        value={service.price} onChange={e => updateService(service.id, 'price', e.target.value)}
+                        placeholder="e.g. ₹50,000 / Custom"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-purple"
+                      />
+                    </div>
+                 </div>
+               ))}
+               {services.length === 0 && (
+                 <div className="text-center py-8 text-text-soft text-sm">No services configured.</div>
+               )}
+             </div>
+             <Button onClick={handleSavePrices} className="w-full mt-4 shrink-0" disabled={isSaving}>
+               {isSaving ? 'Saving Changes...' : 'Save Services'}
+             </Button>
+          </GlassCard>
+       </div>
+    </div>
+  );
+}
