@@ -2,9 +2,12 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
 import { motion } from 'motion/react';
-import { Check, Sparkles, MonitorPlay, Code2, PenTool, LayoutDashboard, Database, Share2, Search, Target, Briefcase } from 'lucide-react';
+import { Check, Sparkles, MonitorPlay, Code2, PenTool } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
 
-const SERVICES = [
+const DEFAULT_SERVICES = [
   {
     title: "Video Editing",
     tagline: "High-retention cinematic edits",
@@ -58,6 +61,41 @@ const SERVICES = [
 ];
 
 export function Services() {
+  const [liveServices, setLiveServices] = useState<any[]>(DEFAULT_SERVICES);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const snap = await getDoc(doc(db, 'settings', 'pricing'));
+        if (snap.exists()) {
+          const categories = snap.data().categories;
+          
+          // Map admin categories to UI structure
+          const iconMap: Record<string, React.ReactNode> = {
+            'cat1': <MonitorPlay className="w-6 h-6" />,
+            'cat2': <Sparkles className="w-6 h-6" />,
+            'cat3': <Code2 className="w-6 h-6" />,
+            'cat4': <PenTool className="w-6 h-6" />,
+          };
+          
+          const updated = DEFAULT_SERVICES.map((defService, index) => {
+             const catId = `cat${index + 1}`;
+             const dbCat = categories.find((c: any) => c.id === catId);
+             if (dbCat) {
+               return { ...defService, title: dbCat.name, items: dbCat.items };
+             }
+             return defService;
+          });
+          
+          setLiveServices(updated);
+        }
+      } catch (err) {
+        console.error('Error fetching live pricing', err);
+      }
+    };
+    fetchServices();
+  }, []);
+
   return (
     <div id="services" className="pt-24 pb-32 flex flex-col relative w-full">
       
@@ -77,7 +115,7 @@ export function Services() {
         
         {/* SERVICES BENTO GRID */}
         <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8">
-          {SERVICES.map((srv, idx) => (
+          {liveServices.map((srv, idx) => (
             <GlassCard key={idx} glowOnHover className="flex flex-col h-full border-t-2 border-t-white/10 group-hover:border-t-brand-purple transition-all duration-500">
                
                <div className="flex items-center gap-4 mb-8">

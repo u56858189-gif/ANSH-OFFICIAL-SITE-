@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
-import { motion } from 'motion/react';
 import { Activity, Users, Eye, ArrowUp, DollarSign, RefreshCw, Trash2, Plus } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { signInAnonymously } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/firebase';
 
 const MOCK_DATA = [
   { name: 'Jan', traffic: 1200 },
@@ -68,22 +70,48 @@ export function AdminPanel() {
   ]);
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'pricing');
+        const snap = await getDoc(docRef);
+        if (snap.exists()) {
+          setServiceCategories(snap.data().categories);
+        }
+      } catch (err) {
+        console.error('Failed to fetch pricing:', err);
+      }
+    };
+    fetchServices();
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (username.trim() === 'DUBAI CHALO' && password.trim() === 'DOLLER$$$') {
-      setIsAuthenticated(true);
-      setError('');
+      try {
+        await signInAnonymously(auth);
+        setIsAuthenticated(true);
+        setError('');
+      } catch (err) {
+        setError('Authentication failed. Check Firebase config.');
+      }
     } else {
       setError('Invalid credentials');
     }
   };
 
-  const handleSavePrices = () => {
+  const handleSavePrices = async () => {
     setIsSaving(true);
-    setTimeout(() => {
+    try {
+      const docRef = doc(db, 'settings', 'pricing');
+      await setDoc(docRef, { categories: serviceCategories });
+      alert('Pricing published successfully to live site!');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to save. Check permissions.');
+    } finally {
       setIsSaving(false);
-      // In a real app this would save to a database.
-    }, 800);
+    }
   };
 
   const addItemToCategory = (categoryId: string) => {
