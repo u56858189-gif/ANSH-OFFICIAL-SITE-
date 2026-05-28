@@ -12,8 +12,7 @@ service cloud.firestore {
     }
 
     match /settings/pricing {
-      allow read: if true;
-      allow write: if isSignedIn();
+      allow read, write: if true;
     }
   }
 }

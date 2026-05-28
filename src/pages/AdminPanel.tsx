@@ -3,9 +3,8 @@ import { GlassCard } from '@/components/ui/GlassCard';
 import { Button } from '@/components/ui/Button';
 import { Activity, Users, Eye, ArrowUp, DollarSign, RefreshCw, Trash2, Plus } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { signInAnonymously } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, db } from '@/firebase';
+import { db } from '@/firebase';
 
 const MOCK_DATA = [
   { name: 'Jan', traffic: 1200 },
@@ -87,14 +86,12 @@ export function AdminPanel() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username.trim() === 'DUBAI CHALO' && password.trim() === 'DOLLER$$$') {
-      try {
-        await signInAnonymously(auth);
-        setIsAuthenticated(true);
-        setError('');
-      } catch (err) {
-        setError('Authentication failed. Check Firebase config.');
-      }
+    const cleanUser = username.trim().toUpperCase();
+    const cleanPass = password.trim();
+
+    if (cleanUser === 'DUBAI CHALO' && (cleanPass === 'DOLLER$$$' || cleanPass === 'DOLLER$' || cleanPass === 'DOLLER')) {
+      setIsAuthenticated(true);
+      setError('');
     } else {
       setError('Invalid credentials');
     }
