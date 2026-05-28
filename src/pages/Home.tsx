@@ -56,9 +56,6 @@ export function Home() {
             <Button size="lg" icon={<Zap className="w-4 h-4" />} href="https://wa.me/919693768406" target="_blank">
               Book Strategy Call
             </Button>
-            <Button variant="secondary" size="lg" icon={<Play className="w-4 h-4" />} href="/portfolio">
-              Explore Our Work
-            </Button>
           </motion.div>
 
         </div>
@@ -117,7 +114,7 @@ export function Home() {
           <p className="text-text-soft max-w-2xl mx-auto">From AI video creation to hyper-optimized Google Ads, our suite of luxury digital services is designed for absolute market domination.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {[
             { title: "AI Video & Content", desc: "Cinematic, high-retention video synthesis and editing tailored for viral growth.", icon: <Play className="w-8 h-8 text-brand-pink" /> },
             { title: "Performance Marketing", desc: "Data-driven Meta & Google Ads campaigns optimized by advanced automation.", icon: <Zap className="w-8 h-8 text-brand-blue" /> },
@@ -144,12 +141,6 @@ export function Home() {
               </GlassCard>
             </motion.div>
           ))}
-        </div>
-        
-        <div className="mt-12 text-center">
-          <Button variant="secondary" href="/services">
-             View All Services
-          </Button>
         </div>
       </AnimatedSection>
       
@@ -183,9 +174,6 @@ export function Home() {
              </motion.div>
           ))}
         </div>
-        <div className="text-center mt-12">
-            <Button variant="outline" href="/testimonials">Read All Reviews</Button>
-        </div>
       </AnimatedSection>
 
       {/* PARTNER PROGRAM HIGHLIGHT */}
@@ -215,10 +203,6 @@ export function Home() {
                     </li>
                   ))}
                 </ul>
-
-                <Button icon={<ArrowRight className="w-4 h-4" />} href="/partner-program">
-                  Join The Program
-                </Button>
               </div>
 
               <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden glass-card p-6 flex flex-col justify-between hidden sm:flex">
