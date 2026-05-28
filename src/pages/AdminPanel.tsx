@@ -20,10 +20,51 @@ export function AdminPanel() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
-  const [services, setServices] = useState([
-    { id: 1, name: 'Marketing Retainer', price: '₹90,000' },
-    { id: 2, name: 'Premium Web Dev', price: '₹1.5L' },
-    { id: 3, name: 'Performance Ads', price: '₹50,000' }
+  const [serviceCategories, setServiceCategories] = useState([
+    {
+      id: 'cat1',
+      name: 'Video Editing',
+      items: [
+        { id: '1', name: '1 Minute Reel', price: '₹299 - ₹499' },
+        { id: '2', name: '5 Minutes Video', price: '₹699 - ₹1,199' },
+        { id: '3', name: '10 Minutes Video', price: '₹1,499 - ₹2,499' }
+      ]
+    },
+    {
+      id: 'cat2',
+      name: 'AI Video Creation',
+      items: [
+        { id: '4', name: 'AI Video (1 Minute)', price: '₹499 - ₹999' }
+      ]
+    },
+    {
+      id: 'cat3',
+      name: 'Website Development',
+      items: [
+        { id: '5', name: 'Landing Page', price: '₹1,999 - ₹3,999' },
+        { id: '6', name: 'Business Website', price: '₹4,999 - ₹8,999' },
+        { id: '7', name: 'eCommerce Hub', price: '₹9,999 - ₹17,999' },
+        { id: '8', name: 'Custom Web App', price: '₹9,999 - ₹25,999+' }
+      ]
+    },
+    {
+      id: 'cat4',
+      name: 'Graphic Design',
+      items: [
+        { id: '9', name: 'Logo Design', price: '₹699 - ₹1,999' },
+        { id: '10', name: 'Ad Creative', price: '₹199 - ₹499' },
+        { id: '11', name: 'Instagram Post', price: '₹99 - ₹199' },
+        { id: '12', name: 'Custom Poster', price: '₹199 - ₹499' }
+      ]
+    },
+    {
+      id: 'cat5',
+      name: 'Complete Digital Marketing',
+      items: [
+        { id: '13', name: 'Growth Package', price: '₹55,000 - ₹85,000 / month' },
+        { id: '14', name: 'Premium Scale', price: '₹90,000 - 1.5L+ / month' }
+      ]
+    }
   ]);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -45,16 +86,28 @@ export function AdminPanel() {
     }, 800);
   };
 
-  const addService = () => {
-    setServices([...services, { id: Date.now(), name: '', price: '' }]);
+  const addItemToCategory = (categoryId: string) => {
+    setServiceCategories(serviceCategories.map(cat => 
+      cat.id === categoryId 
+        ? { ...cat, items: [...cat.items, { id: Math.random().toString(), name: '', price: '' }] }
+        : cat
+    ));
   };
 
-  const updateService = (id: number, field: 'name' | 'price', value: string) => {
-    setServices(services.map(s => s.id === id ? { ...s, [field]: value } : s));
+  const updateItem = (categoryId: string, itemId: string, field: 'name' | 'price', value: string) => {
+    setServiceCategories(serviceCategories.map(cat => 
+      cat.id === categoryId 
+        ? { ...cat, items: cat.items.map(item => item.id === itemId ? { ...item, [field]: value } : item) }
+        : cat
+    ));
   };
 
-  const removeService = (id: number) => {
-    setServices(services.filter(s => s.id !== id));
+  const removeItem = (categoryId: string, itemId: string) => {
+    setServiceCategories(serviceCategories.map(cat => 
+      cat.id === categoryId 
+        ? { ...cat, items: cat.items.filter(item => item.id !== itemId) }
+        : cat
+    ));
   };
 
   if (!isAuthenticated) {
@@ -141,46 +194,51 @@ export function AdminPanel() {
              </div>
           </GlassCard>
 
-          <GlassCard className="p-6 flex flex-col max-h-[600px]">
+          <GlassCard className="p-6 flex flex-col max-h-[600px] lg:col-span-1">
              <div className="flex items-center justify-between mb-6">
-               <h3 className="text-xl font-bold text-white flex items-center gap-2"><DollarSign className="w-5 h-5 text-green-400" /> Services</h3>
-               <button onClick={addService} className="bg-white/10 hover:bg-white/20 p-2 rounded-lg transition-colors">
-                 <Plus className="w-4 h-4 text-white" />
-               </button>
+               <h3 className="text-xl font-bold text-white flex items-center gap-2"><DollarSign className="w-5 h-5 text-green-400" /> Pricing Management</h3>
              </div>
              
-             <div className="space-y-4 flex-grow overflow-y-auto no-scrollbar pr-2 mb-4">
-               {services.map((service) => (
-                 <div key={service.id} className="flex flex-col gap-2 p-4 bg-white/5 border border-white/5 rounded-xl group relative">
-                    <button onClick={() => removeService(service.id)} className="absolute top-2 right-2 text-white/40 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                    <div className="space-y-1">
-                      <label className="text-xs text-text-soft font-medium uppercase tracking-wider">Service Name</label>
-                      <input 
-                        type="text" 
-                        value={service.name} onChange={e => updateService(service.id, 'name', e.target.value)}
-                        placeholder="e.g. SEO Optimization"
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-purple"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-xs text-text-soft font-medium uppercase tracking-wider">Price Options</label>
-                      <input 
-                        type="text" 
-                        value={service.price} onChange={e => updateService(service.id, 'price', e.target.value)}
-                        placeholder="e.g. ₹50,000 / Custom"
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-purple"
-                      />
-                    </div>
+             <div className="space-y-6 flex-grow overflow-y-auto no-scrollbar pr-2 mb-4">
+               {serviceCategories.map((category) => (
+                 <div key={category.id} className="space-y-3">
+                   <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                     <h4 className="text-sm font-bold text-brand-blue uppercase tracking-widest">{category.name}</h4>
+                     <button onClick={() => addItemToCategory(category.id)} className="bg-white/5 hover:bg-white/10 p-1.5 rounded-md transition-colors">
+                       <Plus className="w-3 h-3 text-white" />
+                     </button>
+                   </div>
+                   {category.items.map((item) => (
+                     <div key={item.id} className="flex flex-col gap-2 p-3 bg-white/5 border border-white/5 rounded-lg group relative">
+                        <button onClick={() => removeItem(category.id, item.id)} className="absolute top-2 right-2 text-white/40 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 z-10">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <div className="space-y-1">
+                          <input 
+                            type="text" 
+                            value={item.name} onChange={e => updateItem(category.id, item.id, 'name', e.target.value)}
+                            placeholder="Service Name"
+                            className="w-full bg-transparent border-b border-white/10 px-1 py-1 text-sm text-white focus:outline-none focus:border-brand-purple"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <input 
+                            type="text" 
+                            value={item.price} onChange={e => updateItem(category.id, item.id, 'price', e.target.value)}
+                            placeholder="Price (e.g. ₹499 - ₹999)"
+                            className="w-full bg-transparent border-b border-white/10 px-1 py-1 text-sm text-white focus:outline-none focus:border-brand-purple"
+                          />
+                        </div>
+                     </div>
+                   ))}
+                   {category.items.length === 0 && (
+                     <div className="text-xs text-text-soft pb-2">No items in this category.</div>
+                   )}
                  </div>
                ))}
-               {services.length === 0 && (
-                 <div className="text-center py-8 text-text-soft text-sm">No services configured.</div>
-               )}
              </div>
              <Button onClick={handleSavePrices} className="w-full mt-4 shrink-0" disabled={isSaving}>
-               {isSaving ? 'Saving Changes...' : 'Save Services'}
+               {isSaving ? 'Saving Changes...' : 'Save Pricing Menu'}
              </Button>
           </GlassCard>
        </div>
