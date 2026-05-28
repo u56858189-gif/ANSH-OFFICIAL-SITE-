@@ -70,7 +70,7 @@ export function AdminPanel() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === 'DUBAI CHALO' && password === 'DOLLER$$$') {
+    if (username.trim() === 'DUBAI CHALO' && password.trim() === 'DOLLER$$$') {
       setIsAuthenticated(true);
       setError('');
     } else {
