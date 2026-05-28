@@ -69,20 +69,25 @@ export function AdminPanel() {
   ]);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const docRef = doc(db, 'settings', 'pricing');
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          setServiceCategories(snap.data().categories);
-        }
-      } catch (err) {
-        console.error('Failed to fetch pricing:', err);
+  const fetchServices = async () => {
+    try {
+      const docRef = doc(db, 'settings', 'pricing');
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        setServiceCategories(snap.data().categories);
       }
-    };
+    } catch (err) {
+      console.error('Failed to fetch pricing:', err);
+    }
+  };
+
+  useEffect(() => {
     fetchServices();
   }, []);
+
+  const handleCancelPrices = () => {
+    fetchServices();
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -262,9 +267,14 @@ export function AdminPanel() {
                  </div>
                ))}
              </div>
-             <Button onClick={handleSavePrices} className="w-full mt-4 shrink-0" disabled={isSaving}>
-               {isSaving ? 'Saving Changes...' : 'Save Pricing Menu'}
-             </Button>
+             <div className="flex gap-4 mt-4 shrink-0">
+               <Button onClick={handleCancelPrices} variant="outline" className="w-full" disabled={isSaving}>
+                 Cancel
+               </Button>
+               <Button onClick={handleSavePrices} className="w-full" disabled={isSaving}>
+                 {isSaving ? 'Saving...' : 'Save Pricing Menu'}
+               </Button>
+             </div>
           </GlassCard>
        </div>
     </div>
