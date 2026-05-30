@@ -225,8 +225,18 @@ export function AdminPanel() {
           </GlassCard>
 
           <GlassCard className="p-6 flex flex-col max-h-[600px] lg:col-span-1">
-             <div className="flex items-center justify-between mb-6">
-               <h3 className="text-xl font-bold text-white flex items-center gap-2"><DollarSign className="w-5 h-5 text-green-400" /> Pricing Management</h3>
+             <div className="flex flex-col gap-4 mb-6">
+               <div className="flex items-center justify-between">
+                 <h3 className="text-xl font-bold text-white flex items-center gap-2"><DollarSign className="w-5 h-5 text-green-400" /> Pricing Management</h3>
+               </div>
+               <div className="flex gap-3 shrink-0">
+                 <Button onClick={handleCancelPrices} variant="outline" className="flex-1 bg-white/5 text-xs py-2 h-auto" disabled={isSaving}>
+                   Cancel
+                 </Button>
+                 <Button onClick={handleSavePrices} className="flex-1 text-xs py-2 h-auto" disabled={isSaving}>
+                   {isSaving ? 'Saving...' : 'Save Changes & Publish'}
+                 </Button>
+               </div>
              </div>
              
              <div className="space-y-6 flex-grow overflow-y-auto no-scrollbar pr-2 mb-4">
@@ -266,14 +276,6 @@ export function AdminPanel() {
                    )}
                  </div>
                ))}
-             </div>
-             <div className="flex gap-4 mt-4 shrink-0">
-               <Button onClick={handleCancelPrices} variant="outline" className="w-full" disabled={isSaving}>
-                 Cancel
-               </Button>
-               <Button onClick={handleSavePrices} className="w-full" disabled={isSaving}>
-                 {isSaving ? 'Saving...' : 'Save Pricing Menu'}
-               </Button>
              </div>
           </GlassCard>
        </div>
