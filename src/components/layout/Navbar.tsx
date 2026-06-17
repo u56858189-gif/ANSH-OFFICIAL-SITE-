@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/Button';
+import logoUrl from '@/assets/images/ansh_logo.jpg';
 
 const NAV_LINKS = [
   { name: 'Home', path: '/' },
@@ -43,7 +44,7 @@ export function Navbar() {
               <div className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center shrink-0">
                  <div className="absolute inset-0 bg-gradient-to-br from-[#9D4EDD] to-[#00B4FF] rounded-lg rotate-12 group-hover:rotate-45 transition-transform duration-500 shadow-[0_0_20px_rgba(157,78,221,0.5)]" />
                  <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center overflow-hidden">
-                     <img src="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/676913844_1362067095984698_306422047309144541_n.jpg?ccb=11-4&oh=01_Q5Aa4gFSPi166Z4BdOY5IwHeuBcSbZq2wne2iPHFgoU2QeAUbA&oe=6A250981&_nc_sid=5e03e0&_nc_cat=102" alt="A" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                     <img src={logoUrl} alt="Ansh Growth Partner Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                  </div>
               </div>
               <div className="flex flex-col">

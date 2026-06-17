@@ -6,6 +6,7 @@ import { ArrowRight, Play, Terminal, Zap, Shield, Rocket, Star } from 'lucide-re
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { REVIEWS } from './Testimonials';
+import logoUrl from '@/assets/images/ansh_logo.jpg';
 
 export function Home() {
   return (
@@ -82,7 +83,7 @@ export function Home() {
           <div className="flex items-center gap-6 md:border-r md:border-white/10 md:pr-12 md:w-1/3">
              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-purple to-brand-blue p-[2px]">
                <div className="w-full h-full bg-[#050505] rounded-full flex items-center justify-center overflow-hidden">
-                 <img src="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/676913844_1362067095984698_306422047309144541_n.jpg?ccb=11-4&oh=01_Q5Aa4gFSPi166Z4BdOY5IwHeuBcSbZq2wne2iPHFgoU2QeAUbA&oe=6A250981&_nc_sid=5e03e0&_nc_cat=102" alt="Ansh" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                 <img src={logoUrl} alt="Ansh Growth Partner Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                </div>
              </div>
              <div>
